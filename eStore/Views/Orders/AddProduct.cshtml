@@ -1,0 +1,129 @@
+﻿@model PaginatedList<BusinessObject.Object.Product>
+@{
+    ViewData["Title"] = "AddProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int productIDToAdd = 0;
+    int UnitsInStockToAdd = 0;
+}
+
+<h1>List of Products</h1>
+<h4>Search</h4>
+<form asp-action="AddProduct" asp-controller="Orders" method="get">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="search" class="control-label">Product Name</label>
+            </div>
+            <div class="col-md-4">
+                <input id="searchProductName" name="searchProductName" class="form-control" value="@ViewBag.SearchProductName" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <label for="unitPrice" class="control-label">Unit Price Range</label>
+            </div>
+            <div class="col-md-4">
+                @Html.DropDownList("SelectedUnitPriceRange", (SelectList)ViewBag.UnitPriceList,
+               "Select Unit Price Range", htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+<form asp-action="ViewCart" asp-controller="Orders" method="get">
+    <div class="row mt-3">
+        <div class="col-3">
+            <input type="submit" value="View Your Cart" class="btn btn-primary" />
+        </div>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Product ID
+            </th>
+            <th>
+                Category ID
+            </th>
+            <th>
+                Product Name
+            </th>
+            <th>
+                weight
+            </th>
+            <th>
+                Unit Price
+            </th>
+            <th>
+                Units In Stock
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Discount
+            </th>
+            <th>
+                Add to Cart
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductId)
+                    @{
+                        productIDToAdd = item.ProductId;
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitsInStock)
+                    @{
+                        UnitsInStockToAdd = item.UnitsInStock;
+                    }
+                </td>
+                <form asp-action="updateProduct" asp-controller="Orders" method="get">
+                <td>
+                    <input id="quantityToCart" name="quantityToCart" type="number" min="1" max="@UnitsInStockToAdd" value="1" />
+                </td>
+                <td>
+                    <input id="DiscountToAdd" name="DiscountToAdd" type="number" min="0" max="100" value="0" />
+                </td>
+                <td>
+                    <input type="hidden" name="productId" id="productId" value="@productIDToAdd" />
+                    <input type="submit" class="btn btn-primary" value="Add" />
+                </td>
+                </form>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    @{
+        var PreviousDisabled = !Model.PreviousPage ? "disabled" : "";
+        var NextDisabled = !Model.NextPage ? "disabled" : "";
+    }
+    <a asp-action="AddProduct" asp-route-page="@(Model.PageIndex - 1)"
+       class="btn btn-outline-primary @PreviousDisabled">Previous</a>
+    <a asp-action="AddProduct" asp-route-page="@(Model.PageIndex + 1)"
+       class="btn btn-outline-primary @NextDisabled">Next</a>
+</div>

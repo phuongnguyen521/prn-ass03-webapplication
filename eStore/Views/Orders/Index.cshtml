@@ -1,0 +1,120 @@
+﻿@model PaginatedList<BusinessObject.Object.Order>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>List of Orders</h1>
+
+<p>
+    <a asp-action="Create">Create New Order</a>
+</p>
+<form asp-action="Index" asp-controller="Orders" method="get">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="StartOrder" class="control-label">Start Order</label>
+            </div>
+            <div class="col-md-5">
+                <input id="searchStartOrder" name="searchStartOrder" 
+                       type="datetime-local" class="form-control"
+                       value="@ViewBag.SearchStartOrder" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <label for="EndOrder" class="control-label">End Order</label>
+            </div>
+            <div class="col-md-5">
+                <input id="searchEndOrder" name="searchEndOrder" 
+                       type="datetime-local" class="form-control" 
+                       value="@ViewBag.SearchEndOrder" />
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+<form asp-action="Export" asp-controller="Orders" method="get">
+    <div class="col-3">
+        <input type="submit" value="Export" class="btn btn-primary" />
+    </div>
+</form>
+@if (Model.Count() == 0)
+{
+    <h3>There is no orders to display</h3>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Order ID
+                </th>
+                <th>
+                    Member ID
+                </th>
+                <th>
+                    Order Date
+                </th>
+                <th>
+                    Required Date
+                </th>
+                <th>
+                    Shipped Date
+                </th>
+                <th>
+                    Freight
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MemberId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequiredDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ShippedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Freight)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>|
+                        <a asp-action="Details" asp-route-id="@item.OrderId">Details</a>|
+                        <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        @{
+            var PreviousDisabled = !Model.PreviousPage ? "disabled" : "";
+            var NextDisabled = !Model.NextPage ? "disabled" : "";
+        }
+        <a asp-action="Index" asp-route-page="@(Model.PageIndex - 1)"
+           class="btn btn-outline-primary @PreviousDisabled">Previous</a>
+        <a asp-action="Index" asp-route-page="@(Model.PageIndex + 1)"
+           class="btn btn-outline-primary @NextDisabled">Next</a>
+    </div>
+}
+

@@ -1,0 +1,83 @@
+﻿@model PaginatedList<BusinessObject.Object.Member>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>List of Members</h1>
+@if (!String.IsNullOrEmpty(ViewBag.Message))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Message
+    </div>
+}
+<p>
+    <a asp-action="Create">Create new member</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Member ID
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Company Name
+            </th>
+            <th>
+                City
+            </th>
+            <th>
+                Country
+            </th>
+            <th>
+                Password
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MemberId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Password)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.MemberId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.MemberId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.MemberId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    @{
+        var PreviousDisabled = !Model.PreviousPage ? "disabled" : "";
+        var NextDisabled = !Model.NextPage ? "disabled" : "";
+    }
+    <a asp-action="Index" asp-route-page="@(Model.PageIndex - 1)"
+       class="btn btn-outline-primary @PreviousDisabled">Previous</a>
+    <a asp-action="Index" asp-route-page="@(Model.PageIndex + 1)"
+       class="btn btn-outline-primary @NextDisabled">Next</a>
+</div>
